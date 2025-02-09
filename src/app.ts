@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import AuthRouter from './routes/auth.route';
 
 const server = express();
 
@@ -24,5 +25,6 @@ server.use(express.urlencoded({ limit: '10mb', extended: true }));
 server.use(cors(corsOptions));
 
 // Routes
+server.use('/api', AuthRouter);
 
 export { server };
