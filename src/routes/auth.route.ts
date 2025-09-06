@@ -1,38 +1,23 @@
-import { Router } from 'express';
-import { validateAuthCode } from '../services/telegram.service';
-import { createUser } from '../services/user.service';
+import { Router } from "express";
+import {
+  sendPasswordResetHandler,
+  loginHandler,
+  logoutHandler,
+  refreshHandler,
+  registerHandler,
+  resetPasswordHandler,
+  verifyEmailHandler,
+} from "../controllers/auth.controller";
 
-const AuthRouter = Router();
+const authRoutes = Router();
 
-AuthRouter.post('/register', async (req: any, res: any) => {
-	try {
-		const { code } = req.body;
+// prefix: /auth
+authRoutes.post("/register", registerHandler);
+authRoutes.post("/login", loginHandler);
+authRoutes.get("/refresh", refreshHandler);
+authRoutes.get("/logout", logoutHandler);
+authRoutes.get("/email/verify/:code", verifyEmailHandler);
+authRoutes.post("/password/forgot", sendPasswordResetHandler);
+authRoutes.post("/password/reset", resetPasswordHandler);
 
-		if (!code) {
-			return res
-				.status(400)
-				.json({ success: false, message: 'Code is required' });
-		}
-
-		const user = validateAuthCode(code);
-		if (!user) {
-			return res
-				.status(401)
-				.json({ success: false, message: 'Invalid or expired code' });
-		}
-
-		// Save user to MongoDB
-		const newUser = await createUser(user.userId, user.username, user.phone);
-
-		return res.json({
-			success: true,
-			message: 'User registered successfully',
-			user: newUser,
-		});
-	} catch (error) {
-		console.error(error);
-		return res.status(500).json({ success: false, message: 'Server error' });
-	}
-});
-
-export default AuthRouter;
+export default authRoutes;

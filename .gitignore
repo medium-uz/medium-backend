@@ -1,6 +1,8 @@
-
-# dependencies
 /node_modules
-/src/environment
-#environment
-/src/.env
+/.env
+/dist
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp           
